@@ -1,0 +1,27 @@
+# Curated, sourced Earth links. Wording is careful: research areas, not "experiment X caused product Y".
+# Team: open each url and confirm before the final demo (see docs/TEAM_GUIDE.md, Phase 4).
+- title: Smoke detection in closed spaces
+  text: SAME/SAME-R studied smoke particles from overheated materials, the same pre-fire stage that detectors
+    in aircraft, submarines and server rooms try to catch early.
+  source: NASA PSI - SAME-R research impacts
+  url: https://psi.nasa.gov/physci/repo/data/PSI-101
+- title: Safer fire-test standards for materials
+  text: BASS-II aimed to bridge the 1 g NASA-STD-6001 material flammability test and real behaviour in
+    microgravity - relevant to how any industry screens materials for enclosed vehicles.
+  source: NASA PSI - BASS-II objectives
+  url: https://psi.nasa.gov/physci/repo/data/PSI-25
+- title: Cleaner, lower-oxygen fire suppression
+  text: FLEX measured how CO2 and helium dilution extinguish fuel flames, informing suppressant choices
+    where water or halons are not wanted.
+  source: NASA PSI - FLEX research impacts
+  url: https://psi.nasa.gov/physci/repo/data/PSI-69
+- title: Better combustion models for engines and furnaces
+  text: Microgravity flames are simple and spherical, so they are used to validate the chemistry models that
+    help design cleaner burners on Earth.
+  source: NASA PSI - ACME CFI-G
+  url: https://psi.nasa.gov/physci/repo/data/PSI-159
+- title: NASA spinoffs in fire safety
+  text: NASA's Spinoff programme documents fire-safety technology that moved from space programmes to
+    firefighting gear and protective materials.
+  source: NASA Spinoff
+  url: https://spinoff.nasa.gov/

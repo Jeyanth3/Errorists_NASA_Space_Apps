@@ -1,0 +1,42 @@
+# Mission environments FireWise can reason about.
+# status tells the user how solid the numbers are:
+#   operational  - flown / in use today
+#   recommended  - NASA working-group recommendation, not flown on a habitat yet
+#   planning     - planning value quoted in the 2026 Space Apps challenge brief
+#   hypothetical - our own placeholder, clearly labelled in the UI
+
+iss:
+  name: ISS / spacecraft cabin
+  short: ISS
+  gravity_g: 0.0
+  pressure_kpa: 101.3
+  o2_fraction: 0.21
+  status: operational
+  note: Standard sea-level air. Most PSI combustion data was taken close to this.
+
+lunar_habitat:
+  name: Lunar surface habitat
+  short: Moon base
+  gravity_g: 0.165
+  pressure_kpa: 70.3      # 10.2 psi
+  o2_fraction: 0.30
+  status: planning
+  note: Challenge brief mentions >=30% O2 and <=10.2 psi as a possible lunar habitat atmosphere.
+
+exploration_atm:
+  name: Exploration atmosphere (lander / pressurized rover)
+  short: Rover 8.2 psi
+  gravity_g: 0.165
+  pressure_kpa: 56.5      # 8.2 psia
+  o2_fraction: 0.34
+  status: recommended
+  note: 8.2 psia / 34% O2 recommended by NASA's Exploration Atmospheres Working Group for short EVA turnaround.
+
+mars_habitat:
+  name: Mars surface habitat
+  short: Mars base
+  gravity_g: 0.38
+  pressure_kpa: 70.3
+  o2_fraction: 0.30
+  status: hypothetical
+  note: No agreed Mars habitat atmosphere yet - we reuse the lunar planning case so the gravity effect can be seen on its own.
