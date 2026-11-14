@@ -4,69 +4,90 @@ import streamlit as st
 
 from firewise import mace, ui
 
-ui.setup("⚖️ Compare Runs")
-st.caption("Put two NASA runs side by side - within one investigation or across investigations. "
-           "FireWise says whether the comparison is physically fair.")
+ui.header("Compare runs", "Fair fight<br>or not?",
+          lead="Put two NASA runs side by side - within one investigation or across investigations - and see "
+               "whether the comparison is physically fair.")
 
 runs = ui.runs().set_index("run_id")
 invs = sorted(runs["investigation"].unique())
 
-c = st.columns(2)
+c = st.columns(2, gap="large")
 picked = []
 for i, col in enumerate(c):
     with col:
-        inv = st.selectbox(f"Investigation {i + 1}", invs, index=invs.index("FLEX") if i == 0 else invs.index("FLEX"),
-                           key=f"inv{i}")
-        ids = runs[runs["investigation"] == inv].index.tolist()
-        rid = st.selectbox(f"Run {i + 1}", ids, index=min(i * 3, len(ids) - 1), key=f"run{i}")
-        picked.append(rid)
+        ui.html(f'<div class="fw-menu"><div class="i on">› Run {"A" if i == 0 else "B"}</div></div>')
+        with st.container(border=True):
+            inv = st.selectbox("Investigation", invs, index=invs.index("FLEX"), key=f"inv{i}")
+            ids = runs[runs["investigation"] == inv].index.tolist()
+            picked.append(st.selectbox("Run", ids, index=min(i * 3, len(ids) - 1), key=f"run{i}"))
 
 a, b = runs.loc[picked[0]], runs.loc[picked[1]]
-cols = ["investigation", "pillar", "fuel", "fuel_state", "geometry", "thickness_mm", "diameter_mm", "o2_fraction",
-        "pressure_kpa", "po2_kpa", "diluent", "flow_cm_s", "flow_dir", "outcome", "burn_time_s", "spread_rate_mm_s",
-        "burning_rate_k", "extinction_diameter_mm", "aging_s"]
-tab = pd.DataFrame({"field": cols, picked[0]: [a.get(k) for k in cols], picked[1]: [b.get(k) for k in cols]})
-tab = tab.dropna(subset=[picked[0], picked[1]], how="all")
+fields = [("investigation", "Investigation"), ("pillar", "Pillar"), ("fuel", "Fuel"), ("fuel_state", "Fuel state"),
+          ("geometry", "Geometry"), ("thickness_mm", "Thickness mm"), ("diameter_mm", "Diameter mm"),
+          ("o2_fraction", "O₂ fraction"), ("pressure_kpa", "Pressure kPa"), ("po2_kpa", "pO₂ kPa"),
+          ("diluent", "Diluent"), ("flow_cm_s", "Flow cm/s"), ("flow_dir", "Flow direction"), ("outcome", "Outcome"),
+          ("burn_time_s", "Burn time s"), ("spread_rate_mm_s", "Spread mm/s"), ("burning_rate_k", "K mm²/s"),
+          ("extinction_diameter_mm", "Extinction diameter mm"), ("aging_s", "Smoke aging s")]
 
 
 def same(x, y):
     if pd.isna(x) or pd.isna(y):
-        return "❔"
+        return ("unknown", "—")
     if isinstance(x, (int, float)) and isinstance(y, (int, float)):
-        return "✅" if abs(x - y) <= 0.05 * max(abs(x), abs(y), 1e-9) else "❌"
-    return "✅" if str(x) == str(y) else "❌"
+        ok = abs(x - y) <= 0.05 * max(abs(x), abs(y), 1e-9)
+    else:
+        ok = str(x) == str(y)
+    return ("match", "SAME") if ok else ("mismatch", "DIFFERS")
 
 
-tab["same?"] = [same(x, y) for x, y in zip(tab[picked[0]], tab[picked[1]])]
-st.dataframe(tab.astype(str), hide_index=True, width="stretch")
+def fmt(v):
+    if pd.isna(v):
+        return "—"
+    return f"{v:.3g}" if isinstance(v, float) else str(v)
 
-# fairness verdict, reusing MACE: treat run A's conditions as the "mission"
+
+rows = [f'<div class="r h"><span></span><span>Field</span><span>{picked[0]}</span><span>{picked[1]}</span><span></span></div>']
+for k, label in fields:
+    x, y = a.get(k), b.get(k)
+    if pd.isna(x) and pd.isna(y):
+        continue
+    st_, lab = same(x, y)
+    col = ui.STATUS_STYLE[st_][0]
+    rows.append(f'<div class="r"><span>{ui.icon("chevron", 16)}</span><b>{label}</b><span class="fw-mono">{fmt(x)}</span>'
+                f'<span class="fw-mono">{fmt(y)}</span><span class="fw-badge" style="background:{col}">{lab}</span></div>')
+ui.html(f'<div class="fw-acc" style="margin-top:1.4rem">{"".join(rows)}</div>')
+
 q = mace.Query(goal=a["pillar"] if a["pillar"] in mace.PILLARS else "prevention",
                gravity_g=a["gravity_g"], pressure_kpa=a["pressure_kpa"] if pd.notna(a["pressure_kpa"]) else 101.3,
                o2_fraction=a["o2_fraction"] if pd.notna(a["o2_fraction"]) else 0.21,
                material=a["fuel"] if pd.notna(a["fuel"]) else None)
-checks = mace.compare(b.to_dict() | {"run_id": picked[1]}, q)
-bad = [ch.name for ch in checks if ch.status == "mismatch"]
+bad = [ch.name for ch in mace.compare(b.to_dict() | {"run_id": picked[1]}, q) if ch.status == "mismatch"]
 if a["pillar"] != b["pillar"]:
-    st.error(f"Not comparable: these runs answer different safety questions ({a['pillar']} vs {b['pillar']}). "
-             "Their outcomes measure different things.")
+    verdict, tone, text = "Not comparable", ui.CORAL, (f"These runs answer different safety questions ({a['pillar']} vs "
+                                                       f"{b['pillar']}). Their outcomes measure different things.")
 elif a.get("fuel_state") != b.get("fuel_state"):
-    st.error("Not comparable: different fuel states (e.g. droplet vs solid). Outcome numbers mean different things.")
+    verdict, tone, text = "Not comparable", ui.CORAL, "Different fuel states (e.g. droplet vs solid). Outcome numbers mean different things."
 elif bad:
-    st.warning("Comparable with care - these conditions differ: " + ", ".join(bad))
+    verdict, tone, text = "Compare with care", "#f2b632", "These conditions differ: " + ", ".join(bad) + "."
 else:
-    st.success("Fair comparison: same question, fuel state and closely matching atmosphere.")
+    verdict, tone, text = "Fair comparison", ui.MINT, "Same question, same fuel state and closely matching atmosphere."
+ui.html(f"""<div class="fw-dark" style="display:flex;gap:1.6rem;align-items:center">
+<div class="fw-tile" style="background:{tone}">{ui.icon("scale", 28)}</div>
+<div><div class="fw-eyebrow mint">Verdict</div><h2 class="fw-display sm">{verdict}</h2>
+<p class="fw-lead" style="max-width:none;margin-top:.6rem">{text}</p></div></div>""")
 
-st.markdown("#### Trend inside one investigation")
+ui.header("Trends", "Inside one investigation", size="sm")
 inv = st.selectbox("Investigation", invs, index=invs.index("FLEX"), key="trend")
 d = runs[runs["investigation"] == inv].reset_index()
 num = [c for c in d.columns if pd.api.types.is_numeric_dtype(d[c]) and d[c].notna().sum() > 3
        and c not in ("gravity_g", "source_row")]
 if len(num) >= 2:
-    x = st.selectbox("X", num, index=num.index("o2_fraction") if "o2_fraction" in num else 0)
-    y = st.selectbox("Y", num, index=num.index("burn_time_s") if "burn_time_s" in num else 1)
+    c1, c2 = st.columns(2)
+    x = c1.selectbox("X axis", num, index=num.index("o2_fraction") if "o2_fraction" in num else 0)
+    y = c2.selectbox("Y axis", num, index=num.index("burn_time_s") if "burn_time_s" in num else 1)
     color = "outcome" if d["outcome"].notna().any() else "fuel"
-    st.plotly_chart(px.scatter(d, x=x, y=y, color=color, hover_data=["run_id", "fuel"], height=420),
-                    width="stretch")
+    st.plotly_chart(px.scatter(d, x=x, y=y, color=color, hover_data=["run_id", "fuel"], height=440,
+                               title=f"{inv.upper()} · {y} VS {x}"), width="stretch")
 else:
     st.info("Not enough numeric fields in this investigation's table for a trend plot.")
+ui.footer()
