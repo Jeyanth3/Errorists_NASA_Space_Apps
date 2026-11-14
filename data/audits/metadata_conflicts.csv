@@ -1,0 +1,7 @@
+psi_id,field,nasa_value,conflicting_evidence,proposed,status
+PSI-98,investigationStartDate / EndDate,03-02-2001 - 02-28-2008,Hardware field and description say Saffire-I flew in a Cygnus vehicle; Saffire-I burned in June 2016 after Cygnus OA-6 left the ISS.,2016 (flight date),needs team verification
+PSI-98,Experimental table: Sample Length / Width (cm),"Length 40.6, Width 94","Saffire-III table lists the same sample size as Length 94, Width 40.6.","Length 94, Width 40.6",likely swapped columns
+PSI-98 / PSI-100,Sample Thickness,0.37 cm / .33 cm,Saffire-II lists the same SIBAL fabric as 0.37 mm (written '037 mm').,0.37 mm / 0.33 mm,"unit suspect - kept as reported, flagged"
+PSI-69,Burning rate; mm,header unit 'mm',Droplet burning-rate constant K is a d^2-law slope in mm^2/s (FLEX publications).,mm^2/s,"unit corrected in display, raw kept"
+PSI-25 / PSI-26,investigation naming,"PSI-25 = BASS-II, PSI-26 = BASS",Several third-party summaries swap the two ids.,follow PSI,verified against PSI metadata
+PSI-99,Experimental table: Material,blank for samples 2-6 and 2-9,Rows sit directly below SIBAL (2-5) and PMMA (2-8) rows of identical size.,carry material down,"inferred, flagged on the run"
