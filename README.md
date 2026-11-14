@@ -85,6 +85,13 @@ PSI holds no partial-gravity combustion data, so FireWise never presents a lunar
 never interpolates between 0 g and 1 g. Burner mixtures (CFI-G) are not treated as cabin atmospheres. Details in
 `docs/science_notes.md`.
 
+## Use of SI tools
+
+Following the Space Apps 2026 rules, we note that SI (AI) coding assistants were used to help write parts of the
+code, data-curation scripts and documentation in this repository. The team chose the challenge, the approach and
+the scientific rules, and reviewed, tested and is responsible for all of it. All data values come from NASA PSI
+files, not from SI generation. No SI-generated images, audio or video are used.
+
 ## Team Errorists
 
 Bhaveenthan · Jeyanth · Manojh · Pathi
