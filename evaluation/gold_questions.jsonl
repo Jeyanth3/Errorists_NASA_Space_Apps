@@ -1,0 +1,12 @@
+{"q": "How flammable is PMMA in a lunar habitat at 30% oxygen and 10.2 psi?", "goal": "prevention", "top": ["Saffire-II", "BASS-II", "BASS"], "direct_allowed": false}
+{"q": "Does adding CO2 help extinguish fuel droplet fires on the ISS?", "goal": "suppression", "top": ["FLEX"], "direct_allowed": true}
+{"q": "What do we know about smoke from overheated Kapton insulation on the space station?", "goal": "detection", "top": ["SAME-R", "SAME"], "direct_allowed": true}
+{"q": "Would a cotton-fiberglass fabric fire spread in a Mars base?", "goal": "prevention", "top": ["Saffire-I", "Saffire-II", "Saffire-III", "BASS", "BASS-II"], "direct_allowed": false}
+{"q": "Can a heptane droplet flame be put out with helium in orbit?", "goal": "suppression", "top": ["FLEX"], "direct_allowed": true}
+{"q": "Silicone rubber flammability in spacecraft cabin air", "goal": "prevention", "top": ["Saffire-II"], "direct_allowed": true}
+{"q": "Smoke detector performance for Teflon pyrolysis in a lunar rover at 8.2 psi", "goal": "detection", "top": ["SAME", "SAME-R"], "direct_allowed": false}
+{"q": "Flame extinction of methanol droplets in an exploration atmosphere 34% oxygen 8.2 psi", "goal": "suppression", "top": ["FLEX"], "direct_allowed": false}
+{"q": "Do thin PMMA films burn in microgravity with low air flow?", "goal": "prevention", "top": ["BASS-II", "BASS", "Saffire-II"], "direct_allowed": true}
+{"q": "How does a large fabric fire grow on a spacecraft?", "goal": "prevention", "top": ["Saffire-I", "Saffire-III", "Saffire-II"], "direct_allowed": true}
+{"q": "What extinguishes fires in a Moon base with high oxygen?", "goal": "suppression", "top": ["FLEX"], "direct_allowed": false}
+{"q": "Smoke particle aging from Pyrell foam in a closed module", "goal": "detection", "top": ["SAME-R"], "direct_allowed": true}
