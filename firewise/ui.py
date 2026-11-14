@@ -69,6 +69,23 @@ MISSION_ICON = {"iss": "station", "lunar_habitat": "moon", "exploration_atm": "r
                 "custom": "spark"}
 
 
+ASSETS = data.ROOT / "assets"
+
+
+@functools.lru_cache(maxsize=4)
+def _img_uri(name):
+    """Embed an asset at full resolution; the browser scales it down, so it stays sharp."""
+    return "data:image/png;base64," + base64.b64encode((ASSETS / name).read_bytes()).decode()
+
+
+def logo(size=64, bg=None):
+    style = f"width:{size}px;height:{size}px;display:block;object-fit:contain"
+    img = f'<img src="{_img_uri("campfire.png")}" alt="FireWise logo" style="{style}">'
+    if bg:
+        return f'<div style="background:{bg};width:{size + 16}px;height:{size + 16}px;display:grid;place-items:center">{img}</div>'
+    return img
+
+
 def _b64(svg):
     return "data:image/svg+xml;base64," + base64.b64encode(svg.encode()).decode()
 
@@ -173,7 +190,8 @@ h1, h2, h3 {{ font-family: 'Archivo', sans-serif !important; font-stretch: 68%; 
 [data-testid="stSidebarNavLink"] [data-testid="stIconMaterial"] {{ color: {INK}; font-size: 1.15rem; }}
 [data-testid="stSidebarNavLink"]:hover {{ background: {CREAM}; }}
 [data-testid="stSidebarNavLink"][aria-current="page"] {{ background: {CREAM}; box-shadow: inset 4px 0 0 {MINT}; }}
-[data-testid="stLogo"] {{ height: 3.4rem !important; max-width: 15rem; }}
+[data-testid="stLogo"] {{ height: 3.6rem !important; max-width: 15rem; object-fit: contain; }}
+[data-testid="stSidebarCollapsedControl"] img, [data-testid="stHeaderLogo"] {{ height: 2.6rem !important; }}
 
 /* ---------- buttons & links: pills */
 .stButton > button, [data-testid="stPageLink"] a, .stDownloadButton > button {{
@@ -290,7 +308,7 @@ div[data-testid="stExpander"] summary p {{ font-family: 'IBM Plex Mono', monospa
 .fw-foot a, .fw-foot span.l {{ display: block; font-family: 'IBM Plex Mono', monospace; letter-spacing: .1em; text-transform: uppercase;
   font-size: .78rem; color: {INK} !important; text-decoration: none; margin: .55rem 0; }}
 .fw-foot .bar {{ display: flex; justify-content: space-between; align-items: center; background: {CREAM}; border-top: 1px solid {LINE}; }}
-.fw-foot .bar .mk {{ background: {INK}; padding: 1rem 1.4rem; }}
+.fw-foot .bar .mk {{ background: {CREAM}; padding: .7rem 1.2rem; border-right: 1px solid {LINE}; }}
 .fw-foot .bar .c {{ font-size: .85rem; color: #55524a; flex: 1; padding: 0 1.4rem; }}
 .fw-foot .bar .cta {{ background: {INK}; color: {MINT} !important; padding: 1.3rem 1.8rem; font-family: 'IBM Plex Mono', monospace;
   letter-spacing: .14em; text-transform: uppercase; font-size: .8rem; text-decoration: none; }}
@@ -398,16 +416,12 @@ def footer():
     a = lambda xs, ext_=False: "".join(  # noqa: E731
         f'<a href="{u}" target="{"_blank" if ext_ else "_self"}">{t}</a>' for t, u in xs)
     html(f"""<div class="fw-foot"><div class="top">
-    <div><div style="width:64px">{_logo_mark()}</div><p class="fw-muted" style="margin-top:1rem;max-width:18rem">
+    <div>{logo(84)}<p class="fw-muted" style="margin-top:1rem;max-width:18rem">
     Mission-aware fire-safety evidence from NASA microgravity combustion data.</p></div>
     <div><h5>Explore</h5>{a(links)}</div><div><h5>Trust</h5>{a(trust)}</div><div><h5>Sources</h5>{a(ext, True)}</div></div>
-    <div class="bar"><div class="mk">{icon("flame", 22, MINT, 2)}</div>
+    <div class="bar"><div class="mk">{logo(30)}</div>
     <div class="c">© 2026 Team Errorists · NASA Space Apps Challenge · Data: NASA PSI (CC0) · Not endorsed by NASA</div>
     <a class="cta" href="mission" target="_self">Open explorer →</a></div></div>""")
-
-
-def _logo_mark():
-    return f'<div style="background:{INK};width:64px;height:64px;display:grid;place-items:center">{icon("flame", 30, MINT, 2)}</div>'
 
 
 def psi_link(pid):

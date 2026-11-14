@@ -3,9 +3,9 @@ import streamlit as st
 
 from firewise import ui
 
-st.set_page_config(page_title="FireWise | Spacecraft fire-safety evidence", page_icon="assets/mark.svg",
+st.set_page_config(page_title="FireWise | Spacecraft fire-safety evidence", page_icon="assets/campfire.png",
                    layout="wide", initial_sidebar_state="expanded")
-st.logo("assets/logo.svg", icon_image="assets/mark.svg", size="large")
+st.logo("assets/logo_wide.png", icon_image="assets/campfire.png", size="large")
 ui.setup()
 
 pages = {

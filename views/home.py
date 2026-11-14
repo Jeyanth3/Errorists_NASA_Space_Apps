@@ -9,6 +9,8 @@ pubs = ui.publications()
 # ---- hero
 ui.html(f"""
 <div class="fw-hero fw-hero-bg">
+  <div style="display:flex;justify-content:center;margin-bottom:.6rem">
+  <div style="background:rgba(255,255,255,.08);border-radius:50%;padding:18px;border:1px solid rgba(43,240,154,.35)">{ui.logo(130)}</div></div>
   <div class="word">FireWise</div>
   <div class="fw-eyebrow mint plain" style="margin-top:1.4rem">The mission fire-evidence engine</div>
   <h1 class="fw-display">Know what the evidence really says</h1>
