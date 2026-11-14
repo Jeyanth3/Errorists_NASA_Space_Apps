@@ -1,0 +1,21 @@
+# python
+.venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+.ruff_cache/
+
+# secrets
+.env
+.streamlit/secrets.toml
+
+# os / editors
+.DS_Store
+.vscode/
+.idea/
+
+# big NASA downloads stay local (re-create with scripts/psi_fetch.py)
+data/raw/psi/PSI-*/*
+!data/raw/psi/PSI-*/Experimental table
+data/catalog/download_run.txt
+data/catalog/download_log.csv

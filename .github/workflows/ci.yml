@@ -1,0 +1,26 @@
+name: checks
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+      - name: install
+        run: pip install -r requirements-dev.txt
+      - name: lint
+        run: ruff check . --output-format=github
+      - name: rebuild curated data from raw NASA tables
+        run: |
+          python -m firewise.curate
+          git diff --stat --exit-code data/curated || (echo "::error::data/curated is out of date - run 'python -m firewise.curate' and commit" && exit 1)
+      - name: tests (incl. every page rendered headless)
+        run: pytest -q
