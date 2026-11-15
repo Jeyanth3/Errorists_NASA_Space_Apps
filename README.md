@@ -45,14 +45,16 @@ FireWise-Eval (12 hand-labelled questions, `python -m evaluation.benchmark`):
 
 ## NASA data
 
-986 experimental runs from the NASA **Physical Sciences Informatics (PSI)** Combustion Science repository (CC0):
+1,065 experimental runs from the NASA **Physical Sciences Informatics (PSI)** Combustion Science repository (CC0):
 
 | Pillar | Investigations |
 |---|---|
 | Prevention | BASS (PSI-26), BASS-II (PSI-25), Saffire-I/II/III (PSI-98/99/100) |
 | Detection | SAME (PSI-102), SAME-R (PSI-101) |
 | Suppression | FLEX (PSI-69) |
-| Combustion physics (context) | ACME CFI-G (PSI-159) |
+| Combustion physics (context) | CFI (PSI-39), ACME CFI-G (PSI-159) |
+
+Four additional tables contain FLEX-2 fuel ranges, DAFT instrument sessions, SLICE test days and SPICE burner readings. See the **Method & sources** page for these records and [the source audit](docs/science_notes.md#source-audit-14-november-2026) for verification details and missing files.
 
 Plus metadata and 352 publications for all 24 PSI combustion investigations. See `data/README.md`.
 

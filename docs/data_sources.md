@@ -15,6 +15,11 @@
 | PSI-101 | SAME-R | detection | yes | https://psi.nasa.gov/physci/repo/data/PSI-101 |
 | PSI-69 | FLEX | suppression | yes | https://psi.nasa.gov/physci/repo/data/PSI-69 |
 | PSI-159 | ACME CFI-G | physics | yes (normal + inverse flames) | https://psi.nasa.gov/physci/repo/data/PSI-159 |
+| PSI-39 | CFI | physics | individual droplet tests | https://psi.nasa.gov/physci/repo/data/PSI-39 |
+| PSI-68 | FLEX-2 | physics | fuel-specific operating ranges | https://psi.nasa.gov/physci/repo/data/PSI-68 |
+| PSI-47 | DAFT | detection | instrument sessions | https://psi.nasa.gov/physci/repo/data/PSI-47 |
+| PSI-106 | SLICE | physics | daily test summaries | https://psi.nasa.gov/physci/repo/data/PSI-106 |
+| PSI-107 | SPICE | physics | burner readings | https://psi.nasa.gov/physci/repo/data/PSI-107 |
 
 Metadata + publications also pulled for: PSI-10 ACME Flame Design, PSI-20 ACME BRE, PSI-21 ACME CLD Flame,
 PSI-22 ACME E-FIELD, PSI-23 ACME s-Flame, PSI-39 CFI, PSI-47 DAFT/DAFT-2, PSI-60, PSI-62 (BASS modelling),
@@ -24,12 +29,7 @@ Full file list (16,372 files): `data/catalog/psi_files.csv`. Most volume is raw 
 
 ## Manual downloads
 
-Some older ("legacy") PSI files return 404 through the API and must be downloaded from the PSI web page:
-open the PSI page above → *Data files and documents* → download → save into
-`data/raw/psi/<PSI-id>/<category>/`. Current list is the `fail` rows in `data/catalog/download_log.csv`, e.g.
-
-- PSI-26 `Reports/PSI-26_Reports_BASS_FinalReport.pdf` and `PSI-26_Reports_SPICE_FinalReport.pdf`
-- PSI-98 / PSI-100 `Engineering Documents/... SAFFIRE Offgassing Testing Strategy.pdf`
+Eight older PSI entries failed through the website's download service on 14 November 2026. The [source audit](science_notes.md#eight-legacy-source-entries) records the affected entries, the available reports and the five detector workbooks. To retrieve an available file, open the investigation's **Data files and documents** tab and select the file by its original name.
 
 ## Literature
 

@@ -6,7 +6,7 @@
 | `raw/psi/PSI-xx/Experimental table/` | NASA experimental tables, untouched | yes |
 | `raw/psi/PSI-xx/<other>/` | reports, papers, analysed data, images (~1 GB) | no - run the fetch script |
 | `catalog/` | list of combustion investigations and every PSI file (16k rows) | yes |
-| `curated/` | `runs.csv`, `investigations.csv`, `publications.csv` built by `python -m firewise.curate` | yes |
+| `curated/` | Run records, investigation and publication indexes, FLEX-2 fuel ranges, DAFT sessions, SLICE test days and SPICE readings. Rebuild with `python -m firewise.curate`. | yes |
 | `audits/` | metadata conflicts we found | yes |
 
 Re-create everything:

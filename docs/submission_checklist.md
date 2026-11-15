@@ -15,7 +15,7 @@ Submission closes **Sun 15 Nov, 23:59 local time**. We aim for 22:00.
 **Project name:** FireWise
 
 **High-level summary (draft):**
-FireWise is a mission-aware evidence dashboard for spacecraft fire safety. It turns 986 experimental runs from
+FireWise is a mission-aware evidence dashboard for spacecraft fire safety. It turns 1,065 experimental runs from
 NASA's Physical Sciences Informatics combustion repository (BASS, BASS-II, Saffire I-III, SAME, SAME-R, FLEX,
 ACME CFI-G) into ranked, traceable evidence for prevention, detection and suppression. A user picks a mission -
 ISS, a lunar habitat, a pressurized rover or a Mars base - and FireWise's MACE engine scores every NASA run

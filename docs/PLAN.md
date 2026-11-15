@@ -17,7 +17,7 @@ re-assign the issue.
 ## Phase 0 - Setup (Sat 09:00-10:30) ✅ mostly done
 
 - [x] Repo, CI, project skeleton, working app
-- [x] NASA PSI data pulled: 24 combustion investigations, 9 experimental tables curated to 986 runs
+- [x] NASA PSI data pulled: 24 combustion investigations, 10 investigations curated to 1,065 run records
 - [ ] Everyone: accept the GitHub invite, clone, run `streamlit run app.py`, run `pytest -q`
 - [ ] Everyone: be on the Space Apps team page, same local event (Batticaloa), not waitlisted
 - [ ] A: create the Space Apps project page, paste the summary from `docs/submission_checklist.md`
@@ -80,6 +80,6 @@ re-assign the issue.
 |---|---|
 | Impact | Moon/Mars habitat fire safety; shows what NASA has *not* tested yet → what to test next |
 | Creativity | MACE: three separate scores + rule-based evidence levels + condition certificate, not a chatbot over PDFs |
-| Validity | 986 real runs, provenance per value, 34 automated tests, benchmark vs BM25, honest limits page |
+| Validity | 1,065 real runs, provenance per value, 34 automated tests, benchmark vs BM25, honest limits page |
 | Relevance | NASA PSI data is the core of every screen; all three pillars the brief names |
 | Presentation | 30 s story: "the search engine says yes, the physics says no" |
