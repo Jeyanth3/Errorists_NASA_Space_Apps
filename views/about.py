@@ -1,3 +1,4 @@
+import pandas as pd
 import streamlit as st
 
 from firewise import data, mace, ui
@@ -57,6 +58,13 @@ st.dataframe(show, hide_index=True, width="stretch",
                             "total_gb": st.column_config.NumberColumn("data on PSI (GB)", format="%.1f")})
 st.caption("NASA Physical Sciences Informatics (PSI), https://psi.nasa.gov - Combustion Science. Files released under "
            "CC0 1.0. Publications per investigation: data/curated/publications.csv.")
+
+with st.expander("Additional NASA experiment tables"):
+    tables = {"FLEX-2 fuel ranges": "flex2_fuel_ranges", "DAFT instrument sessions": "daft_sessions",
+              "SLICE test days": "slice_test_days", "SPICE burner readings": "spice_burner_readings"}
+    selection = st.selectbox("Experiment table", tables.keys())
+    st.dataframe(pd.read_csv(data.CURATED / f"{tables[selection]}.csv", keep_default_na=False),
+                 hide_index=True, width="stretch")
 
 ui.html("""<div class="fw-dark" style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem">
 <div><div class="fw-eyebrow mint">Team</div><h2 class="fw-display sm">Errorists</h2>

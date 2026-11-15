@@ -1,0 +1,18 @@
+investigation,material,variable,condition,value,unit,report,page,location
+SAME,Kapton,Count mean diameter,Unaged,105,nm,PSI-102_Reports_SAME_Final Science Report.pdf,27,Table 1
+SAME,Kapton,Count mean diameter,Aged 12 min,186,nm,PSI-102_Reports_SAME_Final Science Report.pdf,27,Table 1
+SAME,Cotton lampwick,Count mean diameter,Unaged,227,nm,PSI-102_Reports_SAME_Final Science Report.pdf,27,Table 1
+SAME,Cotton lampwick,Count mean diameter,Aged 12 min,308,nm,PSI-102_Reports_SAME_Final Science Report.pdf,27,Table 1
+SAME,Silicone rubber,Count mean diameter,Unaged,257,nm,PSI-102_Reports_SAME_Final Science Report.pdf,27,Table 1
+SAME,Silicone rubber,Count mean diameter,Aged 12 min,422,nm,PSI-102_Reports_SAME_Final Science Report.pdf,27,Table 1
+SAME,Teflon,Count mean diameter,Unaged,205,nm,PSI-102_Reports_SAME_Final Science Report.pdf,27,Table 1
+SAME,Teflon,Count mean diameter,Aged 12 min,273,nm,PSI-102_Reports_SAME_Final Science Report.pdf,27,Table 1
+SAME-R,Kapton,Count mean diameter,Unaged,62,nm,PSI-101_Reports_SAME-R_Final Report.pdf,4,Table 1
+SAME-R,Kapton,Count mean diameter,Aged 12 min,121,nm,PSI-101_Reports_SAME-R_Final Report.pdf,4,Table 1
+SAME-R,Cotton lampwick,Count mean diameter,Unaged,142,nm,PSI-101_Reports_SAME-R_Final Report.pdf,5,Table 1
+SAME-R,Cotton lampwick,Count mean diameter,Aged 12 min,308,nm,PSI-101_Reports_SAME-R_Final Report.pdf,5,Table 1
+SAME-R,Silicone rubber,Count mean diameter,Unaged,221,nm,PSI-101_Reports_SAME-R_Final Report.pdf,5,Table 1
+SAME-R,Silicone rubber,Count mean diameter,Aged 12 min,400,nm,PSI-101_Reports_SAME-R_Final Report.pdf,5,Table 1
+SAME-R,Teflon,Count mean diameter,Unaged,111,nm,PSI-101_Reports_SAME-R_Final Report.pdf,5,Table 1
+SAME-R,Teflon,Count mean diameter,Aged 12 min,115,nm,PSI-101_Reports_SAME-R_Final Report.pdf,5,Table 1
+SAME,Kapton,Particle number concentration,Run 14 workbook average,61180,particles/cm³,PSI-102_Analyzed Data_GMT263 run 14 kapton avg.xls,,for average!H98

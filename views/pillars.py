@@ -1,7 +1,8 @@
+import pandas as pd
 import plotly.express as px
 import streamlit as st
 
-from firewise import insights, ui
+from firewise import data, insights, ui
 
 ui.header("Safety pillars", "Prevent. Detect.<br>Suppress.",
           lead="Key measured findings per pillar. Charts only compare like with like - droplet extinction is "
@@ -44,6 +45,27 @@ with t1:
 with t2:
     intro("detection", "Will we notice it early?", "Smoke from overheated - not yet flaming - spacecraft materials, "
           "aged and measured.", "SAME · SAME-R")
+    particles = pd.read_csv(data.CURATED / "smoke_particles.csv", keep_default_na=False)
+    sizes = particles[particles["variable"] == "Count mean diameter"]
+    study = st.radio("Smoke experiment", sizes["investigation"].unique(), horizontal=True)
+    selected = sizes[sizes["investigation"] == study]
+    st.plotly_chart(px.bar(selected, x="material", y="value", color="condition", barmode="group",
+                           text="value", title=f"{study} · Smoke particle size before and after aging",
+                           labels={"material": "Material", "value": "Mean particle diameter (nm)",
+                                   "condition": "Smoke age", "page": "PDF page", "location": "Table"},
+                           hover_data=["page", "location"],
+                           color_discrete_map={"Unaged": ui.TEAL, "Aged 12 min": ui.ORANGE}),
+                    width="stretch")
+    source_id = "PSI-102" if study == "SAME" else "PSI-101"
+    pages = ", ".join(selected["page"].unique())
+    st.caption(f"Each particle counts equally in the mean diameter. "
+               f"[NASA {study} final report, Table 1, PDF pages {pages}]"
+               f"(https://psi.nasa.gov/physci/repo/data/investigations/{source_id})")
+    if study == "SAME":
+        reading = particles[particles["variable"] == "Particle number concentration"].iloc[0]
+        st.metric("Kapton run 14 · average P-Trak reading", f"{reading['value']:,} {reading['unit']}")
+        st.caption(f"Instrument concentration in the sampled air. Source: {reading['report']}, "
+                   f"cell {reading['location']}.")
     for f in insights.detection():
         ui.fact_box(f)
     sm = runs[(runs["investigation"] == "SAME-R") & runs["aging_s"].notna()]
@@ -55,8 +77,6 @@ with t2:
                                  title="HEATER SETTING (RT/R0) VS AGING",
                                  labels={"heater_ratio": "Rt/R0 (temperature proxy)", "aging_s": "aging time (s)"}),
                       width="stretch")
-    st.info("Detection evidence covers six materials at ISS cabin pressure only. Particle-size results live in the "
-            "SAME reports (data/raw/psi/PSI-101 and PSI-102).")
 
 with t3:
     intro("suppression", "What puts it out?", "Fuel droplets burned in air, CO₂ and helium mixtures at several "
@@ -82,8 +102,8 @@ with t3:
     st.caption("Small samples for CO₂ (20 runs) and He (4 runs) - shares are indicative, not rates.")
 
 with t4:
-    intro("combustion physics", "Context, not cabins.", "ACME CFI-G burner flames including very high O₂ mixtures. "
-          "Useful physics, never a crew atmosphere.", "ACME CFI-G")
+    intro("combustion physics", "Combustion experiments", "CFI records droplet test conditions. "
+          "CFI-G measures burner flames across a range of oxygen mixtures.", "CFI · ACME CFI-G")
     for f in insights.physics():
         ui.fact_box(f)
     cf = runs[runs["investigation"] == "ACME CFI-G"]
