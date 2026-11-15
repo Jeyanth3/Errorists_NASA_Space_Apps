@@ -38,7 +38,7 @@ def parse(question):
     material = None
     fams = data.runs()["fuel"].dropna().unique()
     for fam in sorted(fams, key=len, reverse=True):
-        key = fam.split(" ")[0].lower().strip("()")
+        key = fam.split(" (")[0].lower()
         if key and re.search(rf"\b{re.escape(key)}", q):
             material = fam
             break

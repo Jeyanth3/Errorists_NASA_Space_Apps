@@ -29,6 +29,8 @@ PILLAR = {
     "PSI-101": "detection", "PSI-102": "detection",
     "PSI-69": "suppression",
     "PSI-159": "combustion physics",
+    "PSI-39": "combustion physics", "PSI-47": "detection",
+    "PSI-68": "combustion physics", "PSI-106": "combustion physics", "PSI-107": "combustion physics",
 }
 
 MATERIALS = [
@@ -120,6 +122,10 @@ def bass2():
             "pi": r.get("PI"),
         })
         rec["flags"].append("pressure assumed ~1 atm (MSG in ISS cabin)")
+        final_co = r["Final CO (ppm)"].strip()
+        if final_co.startswith((">", "<")) or final_co.lower() in {"or", "over"}:
+            rec["co_final_ppm"] = None
+            rec["flags"].append(f"final CO outside measurement range: {final_co}")
         if o2 is not None and o2 > 30:
             rec["flags"].append("O2 reading looks odd - check raw row")
         rows.append(rec)
@@ -151,6 +157,10 @@ def _thickness_from_label(txt):
 
 def bass1():
     df, src = _table("PSI-26")
+    matrix = pd.read_csv(ROOT / "data/reference/bass_as_run.csv", dtype=str, keep_default_na=False)
+    matrix = matrix.set_index(["as_run_test", "test", "sample"])
+    if not matrix.index.is_unique:
+        raise ValueError("duplicate BASS test and sample identifiers in as-run extract")
     rows = []
     for i, r in df.iterrows():
         mat_txt = r.get("Fuel Sample Material", "")
@@ -165,6 +175,10 @@ def bass1():
             flag = None
         size = units.length_mm(re.search(r"\d+\s*cm", mat_txt).group()) if re.search(r"\d+\s*cm", mat_txt) else None
         rec = _base("PSI-26", "BASS", src, i)
+        key = tuple(r[c].strip() for c in ("As Run Test #", "Test #", "Sample #"))
+        entry = matrix.loc[key]
+        citation = f"PSI-26_Science Documents_As Run_Test Matrix.xlsx, 'as run matrix', row {entry['sheet_row']}"
+        observation = " ".join(entry["observations"].split())
         rec.update({
             "run_id": f"BASS-{r.get('As Run Test #', i)}-{r.get('Test #', '')}",
             "date": r.get("Date"),
@@ -172,13 +186,16 @@ def bass1():
             "geometry": geo or ("fabric" if fam and ("SIBAL" in fam or "Nomex" in fam) else None),
             "diameter_mm": size if geo == "sphere" else None,
             "width_mm": size if geo != "sphere" else None,
-            "o2_fraction": None,
-            "pressure_kpa": CABIN_KPA,
+            "o2_fraction": float(entry["o2_fraction"]),
+            "pressure_kpa": float(entry["pressure_atm"]) * units.ATM_KPA,
+            "flow_setting_raw": f"fan {entry['fan_display']} / air {entry['air_display']}",
+            "notes": f"{citation}. {observation}",
             "flow_dir": "opposed" if "opposed" in mat_txt.lower() else None,
         })
-        rec["flags"].append("pressure assumed ~1 atm (MSG in ISS cabin)")
         if flag:
             rec["flags"].append(flag)
+        if rec["date"] == "5/15/2103":
+            rec["flags"].append("source year 2103 conflicts with the BASS flight period")
         rows.append(rec)
     return rows
 
@@ -239,6 +256,15 @@ def saffire():
             if "037 mm" in str(r.get(col("thickness"), "")):
                 rec["flags"].append("thickness '037 mm' in source - read as 0.37 mm")
                 rec["thickness_mm"] = 0.37
+            thickness = r.get(col("thickness"), "")
+            if "fig" in thickness.lower() or " and " in thickness:
+                rec["thickness_mm"] = None
+                rec["flags"].append(f"no single sample thickness: {thickness}")
+            if " and " in r.get(col("sample length"), ""):
+                rec["length_mm"] = None
+                rec["flags"].append("two component lengths in source")
+            if "&" in mat_txt:
+                rec["fuel"] = mat_txt
             rows.append(rec)
     return rows
 
@@ -266,15 +292,17 @@ def same():
             "fuel_raw": mat_txt, "fuel": fam, "fuel_state": state,
             "flow_cm_s": units.first_number(r.get("Air Flow (cm/s)")),
             "weight_loss_mg_min": units.first_number(r.get("Weight loss rate (mg/min)")),
-            "aging_s": (units.first_number(r.get("Aging Duration (minutes)")) or 0) * 60 or None,
+            "aging_s": float(r["Aging Duration (minutes)"]) * 60 if r["Aging Duration (minutes)"].strip() else None,
             "process": "pyrolysis smoke (heated sample, not flaming)",
             "pressure_kpa": CABIN_KPA,
         })
         if "same conditions" in mat_txt.lower():
             rec["flags"].append("conditions given as 'same as 1-4' - values not repeated in table")
+        rec["flags"].append("pressure assumed ~1 atm (ISS cabin)")
         rows.append(rec)
 
     df, src = _table("PSI-101")
+    seen = {}
     for i, r in df.iterrows():
         mat_txt = r.get("Sample Type", "")
         fam, state = material(mat_txt)
@@ -291,6 +319,18 @@ def same():
             "notes": r.get("Description"),
             "pressure_kpa": CABIN_KPA,
         })
+        rec["flags"].append("pressure assumed ~1 atm (ISS cabin)")
+        previous = seen.get(rec["run_id"])
+        if previous is not None:
+            # Test 57 has identical conditions and identifiers but conflicting sample labels.
+            other = df.iloc[previous["source_row"] - 2]
+            if not r.drop("Sample Type").equals(other.drop("Sample Type")):
+                raise ValueError(f"conflicting records for {rec['run_id']} require review")
+            previous["fuel"] = previous["fuel_state"] = None
+            previous["flags"].append(f"conflicting sample labels: {previous['fuel_raw']} at row "
+                                     f"{previous['source_row']}, {mat_txt} at row {rec['source_row']}")
+            continue
+        seen[rec["run_id"]] = rec
         rows.append(rec)
     return rows
 
@@ -361,11 +401,60 @@ def cfig():
     return rows
 
 
+def cfi():
+    df, src = _table("PSI-39")
+    # The last eight rows repeat earlier tests, including all measured conditions.
+    unique = df.apply(lambda column: column.str.strip()).drop_duplicates()
+    rows = []
+    for i, r in unique.iterrows():
+        rec = _base("PSI-39", "CFI", src, i)
+        fuel = r["Fuel"]
+        pressure = re.fullmatch(r"(\d+(?:\.\d+)?) atm", r["Pressure"])
+        if pressure is None:
+            raise ValueError(f"unexpected pressure at {src} row {i + 2}")
+        rec.update(run_id=f"CFI-{r['Flex Number']}", date=r["Test Date"], fuel_raw=df.at[i, "Fuel"],
+                   fuel="n-Dodecane" if fuel == "C12H26" else fuel, fuel_state="liquid", geometry="droplet",
+                   pressure_kpa=float(pressure[1]) * units.ATM_KPA, o2_fraction=float(r["Oxygen"]),
+                   n2_fraction=float(r["Nitrogen"]), he_fraction=float(r["Helium"]))
+        rows.append(rec)
+    return rows
+
+
+# These PSI tables describe a different unit of observation from runs.csv.
+# Preserve repeated burner readings and multi-value cells without inventing runs.
+CONTEXT_TABLES = {
+    "flex2_fuel_ranges": ("PSI-68", {
+        "Sample (Fuel Type)": "fuel", "Initial Droplet Diameter (mm)": "diameter_mm_range",
+        "Ambient Gas Mixture": "gas_mixtures", "Oxygen Mole Fraction": "o2_fraction_options",
+        "Ambient Pressure (atm)": "pressure_atm_options", "Ambient Temperature (C)": "temperature_c",
+        "Flow Velocity (cm/s)": "flow_cm_s_range"}),
+    "daft_sessions": ("PSI-47", {
+        "Session Name": "session", "Actual Day": "date_gmt", "Hardware Description": "hardware",
+        "Sample Material": "aerosol", "Sampled Location": "sampled_location"}),
+    "slice_test_days": ("PSI-106", {"Test Date": "date_and_notes", "Fuel Type": "fuel_and_notes"}),
+    "spice_burner_readings": ("PSI-107", {
+        "GMT date": "gmt_day", "GMT ignition": "gmt_ignition", "GMT Flame Off": "gmt_flame_off",
+        "Fuel": "fuel", "Nozzle (mm)": "nozzle_mm", "Fuel Rate (sccm)": "fuel_rate_sccm",
+        "Fuel Rate (mg/s)": "fuel_rate_mg_s", "HC Fuel Rate (mg/s)": "hc_fuel_rate_mg_s",
+        "Air Rate (cm/s)": "air_rate_cm_s"}),
+}
+
+
+def write_context_tables():
+    for name, (pid, columns) in CONTEXT_TABLES.items():
+        raw, src = _table(pid)
+        table = raw.loc[:, list(columns)].rename(columns=columns)
+        table.insert(0, "source_row", table.index + 2)
+        table.insert(0, "source_file", src)
+        table.insert(0, "psi_id", pid)
+        table.to_csv(OUT / f"{name}.csv", index=False)
+
+
 # ---------------------------------------------------------------- investigations + pubs
 def investigations():
     inv, pubs = [], []
     for f in sorted((RAW / "meta").glob("PSI-*.json"), key=lambda p: int(p.stem.split("-")[1])):
-        d = json.loads(f.read_text())
+        d = json.loads(f.read_bytes())
         pid = f.stem
         text = " ".join(str(d.get(k) or "") for k in ("objective", "hypothesis", "approach", "researchImpacts", "description"))
         inv.append({
@@ -395,14 +484,16 @@ def investigations():
 
 
 def build():
-    rows = bass2() + bass1() + saffire() + same() + flex() + cfig()
+    rows = bass2() + bass1() + saffire() + same() + flex() + cfig() + cfi()
     runs = pd.DataFrame(rows)
     runs["po2_kpa"] = runs["o2_fraction"] * runs["pressure_kpa"]
     runs["flags"] = runs["flags"].apply(lambda x: " | ".join(x))
     runs = runs.rename(columns={"flags": "data_flags"})
-    runs = runs.drop_duplicates("run_id", keep="first")
+    if not runs["run_id"].is_unique:
+        raise ValueError("duplicate experimental run ID: review source rows before exporting")
     inv, pubs = investigations()
     OUT.mkdir(parents=True, exist_ok=True)
+    write_context_tables()
     runs.to_csv(OUT / "runs.csv", index=False)
     inv.to_csv(OUT / "investigations.csv", index=False)
     pubs.to_csv(OUT / "publications.csv", index=False)

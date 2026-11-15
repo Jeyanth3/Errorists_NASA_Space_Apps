@@ -28,11 +28,11 @@ def publications():
 
 @lru_cache(maxsize=1)
 def missions():
-    with open(ROOT / "configs" / "missions.yaml") as fh:
+    with open(ROOT / "configs" / "missions.yaml", encoding="utf-8") as fh:
         return yaml.safe_load(fh)
 
 
 @lru_cache(maxsize=1)
 def earth_links():
-    with open(ROOT / "configs" / "earth_benefits.yaml") as fh:
+    with open(ROOT / "configs" / "earth_benefits.yaml", encoding="utf-8") as fh:
         return yaml.safe_load(fh)

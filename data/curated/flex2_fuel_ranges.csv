@@ -1,0 +1,9 @@
+psi_id,source_file,source_row,fuel,diameter_mm_range,gas_mixtures,o2_fraction_options,pressure_atm_options,temperature_c,flow_cm_s_range
+PSI-68,PSI-68_Experimental table_Flex2.csv,2,IsoOctane (pure),1.5 - 5,O2/N2 or O2/He,0.17; 0.21;0.25; 0.3,0.5; 1.0; 1.5; 2.0; or 3.0 ,25,0.1 - 5
+PSI-68,PSI-68_Experimental table_Flex2.csv,3,n-Octane (pure),1.5 - 5,O2/N2 or O2/He,0.17; 0.21;0.25; 0.3,0.5; 1.0; 1.5; 2.0; or 3.0 ,25,0.1 - 5
+PSI-68,PSI-68_Experimental table_Flex2.csv,4,Heptane (pure),1.5 - 5,O2/N2 or O2/He,0.17; 0.21;0.25; 0.3,0.5; 1.0; 1.5; 2.0; or 3.0 ,25,0.1 - 5
+PSI-68,PSI-68_Experimental table_Flex2.csv,5,Decane (pure),1.5 - 5,O2/N2 or O2/He,0.17; 0.21;0.25; 0.3,0.5; 1.0; 1.5; 2.0; or 3.0 ,25,0.1 - 5
+PSI-68,PSI-68_Experimental table_Flex2.csv,6,Ethanol (pure),1.5 - 5,O2/N2 or O2/He,0.17; 0.21;0.25; 0.3,0.5; 1.0; 1.5; 2.0; or 3.0 ,25,0.1 - 5
+PSI-68,PSI-68_Experimental table_Flex2.csv,7,Propanol (95%) Glycerol (5%) (mixture),1.5 - 5,O2/N2 or O2/He,0.17; 0.21;0.25; 0.3,0.5; 1.0; 1.5; 2.0; or 3.0 ,25,0.1 - 5
+PSI-68,PSI-68_Experimental table_Flex2.csv,8,Heptane (50%) IsoOctane (50%) (mixture),1.5 - 5,O2/N2 or O2/He,0.17; 0.21;0.25; 0.3,0.5; 1.0; 1.5; 2.0; or 3.0 ,25,0.1 - 5
+PSI-68,PSI-68_Experimental table_Flex2.csv,9,Propanol (80%) Glycerol (20%) (mixture),1.5 - 5,O2/N2 or O2/He,0.17; 0.21;0.25; 0.3,0.5; 1.0; 1.5; 2.0; or 3.0 ,25,0.1 - 5

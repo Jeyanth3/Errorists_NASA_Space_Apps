@@ -10,7 +10,7 @@ ROOT = data.ROOT
 
 def metadata_conflicts():
     """Conflicts we found while reading PSI. Original value is kept, nothing is overwritten."""
-    meta = {p.stem: json.loads(p.read_text()) for p in (ROOT / "data/raw/psi/meta").glob("PSI-*.json")}
+    meta = {p.stem: json.loads(p.read_bytes()) for p in (ROOT / "data/raw/psi/meta").glob("PSI-*.json")}
     rows = []
     s1 = meta.get("PSI-98", {})
     rows.append({
